@@ -1,3 +1,5 @@
+"use client";
+
 /**
  * v0 by Vercel.
  * @see https://v0.dev/t/3Z2gfLUGQP3
@@ -5,91 +7,88 @@
  */
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
-import { ComponentPropsWithoutRef } from "react";
+import { SendIcon } from "lucide-react";
+import { useState } from "react";
 
 export default function Component() {
+  const [text, setText] = useState("");
+  const handleSubmit = () => {
+    console.log(text);
+  };
+
   return (
-    <div className="flex flex-col h-screen bg-gradient-to-br from-[#ffecd2] to-[#fcb69f]">
-      <header className="flex items-center gap-4 p-4 bg-[#fff5ee] shadow-md">
-        <Avatar className="w-10 h-10 border-2 border-[#fcb69f]">
-          <AvatarImage src="/placeholder-user.jpg" />
-          <AvatarFallback>AC</AvatarFallback>
-        </Avatar>
-        <div className="text-lg font-medium text-[#fc8c8c]">Anime Chat</div>
-      </header>
-      <div className="flex-1 overflow-auto p-4">
-        <div className="flex flex-col gap-4">
-          <div className="flex items-start gap-3">
-            <Avatar className="w-8 h-8 border-2 border-[#fcb69f]">
-              <AvatarImage src="/placeholder-user.jpg" />
-              <AvatarFallback>AC</AvatarFallback>
-            </Avatar>
-            <div className="bg-[#fff5ee] px-4 py-2 rounded-2xl rounded-bl-none shadow-md">
-              <p className="text-sm text-[#fc8c8c]">
-                Konnichiwa! How are you doing today?
-              </p>
-            </div>
+    <div className={"flex items-stretch h-screen w-full"}>
+      <div className="mx-auto flex flex-col h-screen bg-gradient-to-br from-[#b7cbf3] to-[#99c8ef] max-w-[437px] border shadow-lg">
+        <header className="flex items-center gap-4 p-4 bg-[#eef2ff] shadow-md">
+          <Avatar className="w-10 h-10 border-2 border-[#f6d770]">
+            <AvatarImage src="/ai-chan.png" />
+            <AvatarFallback>AC</AvatarFallback>
+          </Avatar>
+          <div className="text-lg font-medium text-[#15122d]">ENFP Chat</div>
+        </header>
+        <ScrollArea className={"w-full h-full px-4 py-2"}>
+          <div className="flex flex-col gap-4">
+            <AIChat>안녕안녕~! 너 뭐하고 있었어~??</AIChat>
+            <MyChat>I'm doing great, thanks for asking! How about you?</MyChat>
+            <AIChat>hello!</AIChat>
           </div>
-          <div className="flex justify-end items-start gap-3">
-            <div className="bg-[#ffecd2] px-4 py-2 rounded-2xl rounded-br-none shadow-md">
-              <p className="text-sm text-[#fc8c8c]">
-                I'm doing great, thanks for asking! How about you?
-              </p>
-            </div>
-            <Avatar className="w-8 h-8 border-2 border-[#fcb69f]">
-              <AvatarImage src="/placeholder-user.jpg" />
-              <AvatarFallback>AC</AvatarFallback>
-            </Avatar>
-          </div>
-          <div className="flex items-start gap-3">
-            <Avatar className="w-8 h-8 border-2 border-[#fcb69f]">
-              <AvatarImage src="/placeholder-user.jpg" />
-              <AvatarFallback>AC</AvatarFallback>
-            </Avatar>
-            <div className="bg-[#fff5ee] px-4 py-2 rounded-2xl rounded-bl-none shadow-md">
-              <p className="text-sm text-[#fc8c8c]">
-                I'm doing great too! I love this anime-style chat interface,
-                it's so cute and fun.
-              </p>
-            </div>
-          </div>
+          <ScrollBar orientation={"vertical"} />
+        </ScrollArea>
+        <div className="bg-[#d4d7f4] p-4 flex items-center gap-2">
+          <Textarea
+            placeholder="한글로 메시지를 입력해주세요"
+            className="flex-1 rounded-md bg-[#e7eaf1] border-none focus:ring-0 focus:outline-none px-4 py-2 text-sm text-[#0c0e22] outline-none"
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                handleSubmit();
+              }
+            }}
+            onChange={(e) => {
+              setText(e.target.value);
+            }}
+          />
+          <Button
+            variant="ghost"
+            size="icon"
+            className="bg-[#9fa8fc] text-[#eeefff] rounded-full p-2 hover:bg-[#8caefc]"
+            onClick={handleSubmit}
+          >
+            <SendIcon className="w-4 h-4" />
+            <span className="sr-only">Send</span>
+          </Button>
         </div>
-      </div>
-      <div className="bg-[#fff5ee] p-4 flex items-center gap-2">
-        <Textarea
-          placeholder="Type your message..."
-          className="flex-1 rounded-full bg-[#ffecd2] border-none focus:ring-0 focus:outline-none px-4 py-2 text-sm text-[#fc8c8c]"
-        />
-        <Button
-          variant="ghost"
-          size="icon"
-          className="bg-[#fcb69f] text-[#fff5ee] rounded-full p-2 hover:bg-[#fc8c8c]"
-        >
-          <SendIcon className="w-4 h-4" />
-          <span className="sr-only">Send</span>
-        </Button>
       </div>
     </div>
   );
 }
 
-function SendIcon(props: ComponentPropsWithoutRef<"svg">) {
+const AIChat = ({ children }: { children: string }) => {
   return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="m22 2-7 20-4-9-9-4Z" />
-      <path d="M22 2 11 13" />
-    </svg>
+    <div className="flex items-start gap-3">
+      <Avatar className="w-8 h-8 border-2 border-[#f6d770]">
+        <AvatarImage src="/ai-chan.png" />
+        <AvatarFallback>AC</AvatarFallback>
+      </Avatar>
+      <div className="bg-[#eef1ff] px-4 py-2 rounded-2xl rounded-bl-none shadow-md">
+        <p className="text-sm text-[#0e111b]">{children}</p>
+      </div>
+    </div>
   );
-}
+};
+
+const MyChat = ({ children }: { children: string }) => {
+  return (
+    <div className="flex justify-end items-start gap-3">
+      <div className="bg-[#4b6bf7] px-4 py-2 rounded-2xl rounded-br-none shadow-md">
+        <p className="text-sm text-[#eceef4]">{children}</p>
+      </div>
+      <Avatar className="w-8 h-8 border-2 border-[#f6d770]">
+        <AvatarImage src="/my-profile.png" />
+        <AvatarFallback>AC</AvatarFallback>
+      </Avatar>
+    </div>
+  );
+};
