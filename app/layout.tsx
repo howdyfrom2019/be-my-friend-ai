@@ -1,8 +1,10 @@
+import { loadEnvConfig } from "@next/env";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
+loadEnvConfig(process.cwd(), process.env.NODE_ENV === "development");
 
 export const metadata: Metadata = {
   title: "Create Next App",
