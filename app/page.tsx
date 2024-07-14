@@ -9,13 +9,49 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
+import { useCreateChat } from "@/requests/openai";
 import { SendIcon } from "lucide-react";
 import { useState } from "react";
 
+interface ConversationType {
+  role: "assistant" | "user";
+  content: string;
+}
+
 export default function Component() {
   const [text, setText] = useState("");
+  const [conversationHistory, setConversationHistory] = useState<
+    ConversationType[]
+  >([
+    {
+      role: "assistant",
+      content:
+        "안녕안녕~! 뭐하고 있었어?? 궁금한거 있으면 다 나한테 물어봐! 😊 난 감정적인 챗봇이얌",
+    },
+  ]);
+  const { mutate, isPending } = useCreateChat({
+    onSuccess: (data) => {
+      console.log(data);
+      setConversationHistory((prev) => [
+        ...prev,
+        {
+          role: data.choices[0].message.role,
+          content: data.choices[0].message.content,
+        },
+      ]);
+    },
+  });
+
   const handleSubmit = () => {
-    console.log(text);
+    setConversationHistory((prev) => [
+      ...prev,
+      {
+        role: "user",
+        content: text,
+      },
+    ]);
+    mutate(text);
+    setText("");
   };
 
   return (
@@ -30,9 +66,20 @@ export default function Component() {
         </header>
         <ScrollArea className={"w-full h-full px-4 py-2"}>
           <div className="flex flex-col gap-4">
-            <AIChat>안녕안녕~! 너 뭐하고 있었어~??</AIChat>
-            <MyChat>I'm doing great, thanks for asking! How about you?</MyChat>
-            <AIChat>hello!</AIChat>
+            {conversationHistory.map((conversation, i) => (
+              <div key={i}>
+                {conversation.role === "assistant" ? (
+                  <AIChat>{conversation.content}</AIChat>
+                ) : (
+                  <MyChat>{conversation.content}</MyChat>
+                )}
+              </div>
+            ))}
+            {isPending && (
+              <p className={"text-xs text-zinc-200"}>
+                Waiting for response....
+              </p>
+            )}
           </div>
           <ScrollBar orientation={"vertical"} />
         </ScrollArea>
@@ -49,10 +96,12 @@ export default function Component() {
             onChange={(e) => {
               setText(e.target.value);
             }}
+            value={text}
           />
           <Button
             variant="ghost"
             size="icon"
+            disabled={isPending}
             className="bg-[#9fa8fc] text-[#eeefff] rounded-full p-2 hover:bg-[#8caefc]"
             onClick={handleSubmit}
           >
